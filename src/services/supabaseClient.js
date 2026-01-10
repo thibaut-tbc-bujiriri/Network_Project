@@ -4,17 +4,22 @@
  */
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    '[Supabase] VITE_SUPABASE_URL ou VITE_SUPABASE_ANON_KEY manquants. ' +
-      'Ajoutez-les dans votre fichier d\'environnement (.env.local par exemple).'
+  console.error(
+    '[Supabase] ⚠️ VITE_SUPABASE_URL ou VITE_SUPABASE_ANON_KEY manquants. ' +
+      'L\'application ne pourra pas se connecter à Supabase. ' +
+      'Ajoutez-les dans les variables d\'environnement Vercel.'
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Créer le client Supabase même si les clés sont manquantes pour éviter les erreurs
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-key'
+);
 
 /**
  * Service Supabase avec toutes les fonctions d'accès aux données
