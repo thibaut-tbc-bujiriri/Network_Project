@@ -4,6 +4,10 @@
 import { supabase } from '../config/supabase.js';
 
 export class SupabaseService {
+  // Exposer supabase pour les requêtes directes
+  get supabase() {
+    return supabase;
+  }
   /**
    * Récupère tous les routeurs à surveiller
    */

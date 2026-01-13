@@ -5,6 +5,7 @@ import { Activity, Server, Users, AlertTriangle, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { supabaseService } from '../services/supabaseClient';
+import StatusBackend from '../components/StatusBackend';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -120,6 +121,9 @@ export default function Dashboard() {
           Vue d'ensemble de votre infrastructure réseau
         </p>
       </div>
+
+      {/* Status Backend */}
+      <StatusBackend />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
