@@ -2,7 +2,7 @@
 -- SCRIPT DE CRÉATION D'UN UTILISATEUR ADMINISTRATEUR
 -- Network Manager - Application de Gestion Réseau
 -- =====================================================
--- 
+--
 -- Ce script crée un utilisateur administrateur par défaut
 -- IMPORTANT : Modifiez l'email et le nom avant d'exécuter !
 -- =====================================================
@@ -12,16 +12,28 @@
 -- =====================================================
 -- Remplacez 'admin@example.com' et 'Administrateur Principal' par vos valeurs
 
-INSERT INTO app_users (email, full_name, role_id, is_active, password)
+INSERT INTO
+    app_users (
+        email,
+        full_name,
+        role_id,
+        is_active,
+        password
+    )
 VALUES (
-    'admin@example.com',  -- ⚠️ REMPLACEZ PAR VOTRE EMAIL
-    'Administrateur Principal',  -- ⚠️ REMPLACEZ PAR VOTRE NOM
-    (SELECT id FROM roles WHERE name = 'Administrateur'),
-    TRUE,
-    NULL  -- Le mot de passe sera défini via l'application
-)
-ON CONFLICT (email) DO UPDATE
-SET 
+        'admin@example.com', -- ⚠️ REMPLACEZ PAR VOTRE EMAIL
+        'Administrateur Principal', -- ⚠️ REMPLACEZ PAR VOTRE NOM
+        (
+            SELECT id
+            FROM roles
+            WHERE
+                name = 'Administrateur'
+        ),
+        TRUE,
+        NULL -- Le mot de passe sera défini via l'application
+    ) ON CONFLICT (email) DO
+UPDATE
+SET
     full_name = EXCLUDED.full_name,
     role_id = EXCLUDED.role_id,
     is_active = TRUE,
@@ -80,38 +92,38 @@ END $$;
 /*
 DO $$
 DECLARE
-    admin_role_id UUID;
-    admin_email VARCHAR(255) := 'admin@example.com';  -- ⚠️ MODIFIEZ
-    admin_name VARCHAR(255) := 'Administrateur Principal';  -- ⚠️ MODIFIEZ
-    admin_password_hash TEXT := 'sha256$salt$hash';  -- ⚠️ REMPLACEZ PAR LE HASH RÉEL
+admin_role_id UUID;
+admin_email VARCHAR(255) := 'admin@example.com';  -- ⚠️ MODIFIEZ
+admin_name VARCHAR(255) := 'Administrateur Principal';  -- ⚠️ MODIFIEZ
+admin_password_hash TEXT := 'sha256$salt$hash';  -- ⚠️ REMPLACEZ PAR LE HASH RÉEL
 BEGIN
-    -- Récupérer l'ID du rôle Administrateur
-    SELECT id INTO admin_role_id 
-    FROM roles 
-    WHERE name = 'Administrateur';
-    
-    IF admin_role_id IS NULL THEN
-        RAISE EXCEPTION 'Le rôle Administrateur n''existe pas';
-    END IF;
-    
-    -- Créer l'utilisateur avec mot de passe hashé
-    INSERT INTO app_users (email, full_name, role_id, is_active, password)
-    VALUES (
-        admin_email,
-        admin_name,
-        admin_role_id,
-        TRUE,
-        admin_password_hash
-    )
-    ON CONFLICT (email) DO UPDATE
-    SET 
-        full_name = EXCLUDED.full_name,
-        role_id = EXCLUDED.role_id,
-        is_active = TRUE,
-        password = EXCLUDED.password,
-        updated_at = NOW();
-    
-    RAISE NOTICE '✅ Utilisateur admin créé avec mot de passe hashé !';
+-- Récupérer l'ID du rôle Administrateur
+SELECT id INTO admin_role_id 
+FROM roles 
+WHERE name = 'Administrateur';
+
+IF admin_role_id IS NULL THEN
+RAISE EXCEPTION 'Le rôle Administrateur n''existe pas';
+END IF;
+
+-- Créer l'utilisateur avec mot de passe hashé
+INSERT INTO app_users (email, full_name, role_id, is_active, password)
+VALUES (
+admin_email,
+admin_name,
+admin_role_id,
+TRUE,
+admin_password_hash
+)
+ON CONFLICT (email) DO UPDATE
+SET 
+full_name = EXCLUDED.full_name,
+role_id = EXCLUDED.role_id,
+is_active = TRUE,
+password = EXCLUDED.password,
+updated_at = NOW();
+
+RAISE NOTICE '✅ Utilisateur admin créé avec mot de passe hashé !';
 END $$;
 */
 
@@ -120,16 +132,28 @@ END $$;
 -- =====================================================
 -- Remplacez 'admin@example.com' et 'Administrateur Principal' par vos valeurs
 
-INSERT INTO app_users (email, full_name, role_id, is_active, password)
+INSERT INTO
+    app_users (
+        email,
+        full_name,
+        role_id,
+        is_active,
+        password
+    )
 VALUES (
-    'admin@example.com',  -- ⚠️ MODIFIEZ CET EMAIL
-    'Administrateur Principal',  -- ⚠️ MODIFIEZ CE NOM
-    (SELECT id FROM roles WHERE name = 'Administrateur'),
-    TRUE,
-    NULL  -- Mot de passe à définir via l'application
-)
-ON CONFLICT (email) DO UPDATE
-SET 
+        'admin@example.com', -- ⚠️ MODIFIEZ CET EMAIL
+        'Administrateur Principal', -- ⚠️ MODIFIEZ CE NOM
+        (
+            SELECT id
+            FROM roles
+            WHERE
+                name = 'Administrateur'
+        ),
+        TRUE,
+        NULL -- Mot de passe à définir via l'application
+    ) ON CONFLICT (email) DO
+UPDATE
+SET
     full_name = EXCLUDED.full_name,
     role_id = EXCLUDED.role_id,
     is_active = TRUE,
@@ -140,22 +164,23 @@ SET
 -- =====================================================
 
 -- Afficher les informations de l'utilisateur admin créé
-SELECT 
+SELECT
     au.id,
     au.email,
     au.full_name,
     r.name AS role_name,
     au.is_active,
-    CASE 
+    CASE
         WHEN au.password IS NULL THEN '❌ Non défini'
         WHEN au.password LIKE 'sha256$%' THEN '✅ Hashé'
         ELSE '⚠️ En clair (à hasher)'
     END AS password_status,
     au.created_at
 FROM app_users au
-LEFT JOIN roles r ON au.role_id = r.id
-WHERE au.email = 'admin@example.com'  -- ⚠️ MODIFIEZ CET EMAIL
-OR r.name = 'Administrateur';
+    LEFT JOIN roles r ON au.role_id = r.id
+WHERE
+    au.email = 'admin@example.com' -- ⚠️ MODIFIEZ CET EMAIL
+    OR r.name = 'Administrateur';
 
 -- =====================================================
 -- NOTES IMPORTANTES
@@ -189,4 +214,3 @@ Vous pouvez utiliser cette fonction dans l'application Node.js/Python pour gén�
 -- =====================================================
 -- FIN DU SCRIPT
 -- =====================================================
-
