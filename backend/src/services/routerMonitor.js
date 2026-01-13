@@ -2,6 +2,7 @@
  * Service de surveillance pour routeurs et switches
  * Supporte : Ping, SSH (MikroTik), SNMP (Cisco/autres)
  */
+/* global process */
 import ping from 'ping';
 import ssh2 from 'ssh2';
 import * as snmp from 'net-snmp';
